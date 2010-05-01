@@ -1,5 +1,8 @@
 package com.forusers.android.bigwords;
 
+import java.awt.font.NumericShaper;
+import java.util.Formatter;
+
 import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -10,6 +13,7 @@ import android.os.Handler;
 import android.widget.TextView;
 
 import com.forusers.android.bigwords.R;
+import com.forusers.android.filter.AccelerometerFilter;
 
 public class BigWords extends Activity {
     /** Called when the activity is first created. */
@@ -32,7 +36,8 @@ public class BigWords extends Activity {
     }
     
     private final SensorEventListener sl = new SensorEventListener() {
-
+    	final AccelerometerFilter rollFilter = new AccelerometerFilter(50, 6);
+    	
 		@Override
 		public void onAccuracyChanged(Sensor arg0, int arg1) {
 			// Don't care
@@ -43,10 +48,10 @@ public class BigWords extends Activity {
 			if (event.sensor.getType() != Sensor.TYPE_ORIENTATION) {
 				return;
 			}
-			float pitch = event.values[1];
 			float roll = event.values[2];
+			rollFilter.pushValue(roll);
 			if (textView != null) {
-				textView.setText("Pitch:" + pitch + " Roll: " + roll);
+				textView.setText("Roll: " + String.format("%.0f", rollFilter.getValue()));
 			}
 		}
     };

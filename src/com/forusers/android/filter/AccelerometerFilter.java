@@ -8,8 +8,8 @@ public class AccelerometerFilter implements Filter {
     private float value;
     private long count;
     
-    // Fast sample rate is about 50Hz, good cutoff is about 75Hz
-    AccelerometerFilter(float sampleRate, float cutoffFrequency) {
+    // Fast sample rate is about 50Hz, good cutoff is about 6Hz
+    public AccelerometerFilter(float sampleRate, float cutoffFrequency) {
     	float dt = (float) (1.0 / sampleRate);
     	float RC = (float) (1.0 / cutoffFrequency);
     	alpha = dt / (RC + dt);
