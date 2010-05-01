@@ -1,4 +1,4 @@
-package com.forusers.android.bigwords.com.forusers.android.bigwords;
+package com.forusers.android.bigwords;
 
 import android.app.Activity;
 import android.hardware.Sensor;
@@ -35,7 +35,7 @@ public class BigWords extends Activity {
 
 		@Override
 		public void onAccuracyChanged(Sensor arg0, int arg1) {
-			// TODO Auto-generated method stub
+			// Don't care
 		}
 
 		@Override
@@ -46,7 +46,7 @@ public class BigWords extends Activity {
 			float pitch = event.values[1];
 			float roll = event.values[2];
 			if (textView != null) {
-				textView.setText("Pitch:" + pitch);
+				textView.setText("Pitch:" + pitch + " Roll: " + roll);
 			}
 		}
     };
