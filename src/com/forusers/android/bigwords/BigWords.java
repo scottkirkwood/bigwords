@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -42,16 +43,18 @@ public class BigWords extends Activity implements OnClickListener {
 			onPlayOrPause();
 		}
 	}
-	
-	@Override
-    public void onPause() {
-		super.onPause();
-		stopPlaying();
-    }
 
 	@Override
     public void onResume() {
 		super.onResume();
+		setWpmText();
+    }
+
+
+	@Override
+    public void onPause() {
+		super.onPause();
+		stopPlaying();
     }
 
     private void onPlayOrPause() {
@@ -63,6 +66,7 @@ public class BigWords extends Activity implements OnClickListener {
 	}
     
 	private void startPlaying() {
+		Log.i(TAG, "Start Playing");
 		if (!paused.compareAndSet(true, false)) {
 			Log.i(TAG, "Attempted to start playing when already playing.");
 			return;
@@ -76,7 +80,8 @@ public class BigWords extends Activity implements OnClickListener {
 	}
 
 	private void stopPlaying() {
-		if (paused.compareAndSet(false, true)) {
+		Log.i(TAG, "Stop Playing");
+		if (!paused.compareAndSet(false, true)) {
 			Log.i(TAG, "Attempted to stop playing when already stopped.");
 			return;
 		}
@@ -101,6 +106,12 @@ public class BigWords extends Activity implements OnClickListener {
 		timerHandler.removeCallbacks(nextWordTask);
 	}
 
+	private void setWpmText() {
+		TextView t = (TextView) findViewById(R.id.wpm);
+		String format = getString(R.string.wpm_format);
+		t.setText(String.format(format, wordsPerMinute));
+	}
+	
 	private void startListening() {
 	    SensorManager sm;
 	    sm = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -142,7 +153,7 @@ public class BigWords extends Activity implements OnClickListener {
 				Log.e(TAG, "Missing textview in nextWordTask");
 				return;
 			}
-			textView.setText(String.format("Word%03d", wordIndex));			
+			textView.setText(String.format("Word%03d", wordIndex++));			
 			timerHandler.postDelayed(this, wpmInDelayMillis());
 		}
     };

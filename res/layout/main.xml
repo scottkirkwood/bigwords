@@ -6,18 +6,25 @@
 	android:layout_height="fill_parent">
    <Button
     android:id="@+id/back"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    style="@style/Buttons"
     android:text="@string/back"
     android:layout_alignParentLeft="true"/>
    <Button
     android:id="@+id/play"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    style="@style/Buttons"
     android:text="@string/play"
     android:layout_alignParentRight="true"/>
   <TextView
-    android:text="@string/text"
     android:id="@+id/text"
+    android:text="@string/text"
     style="@style/BigWord"/>
+  <TextView
+    android:id="@+id/wpm"
+    android:text="@string/empty_wpm"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentBottom="true"
+    />
+    
 </RelativeLayout>

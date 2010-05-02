@@ -5,4 +5,6 @@
     <string name="play">Play</string>
     <string name="stop">Pause</string>
     <string name="back">Back</string>
+    <string name="empty_wpm">200 wpm</string>
+    <string name="wpm_format">%d wpm</string>
 </resources>
