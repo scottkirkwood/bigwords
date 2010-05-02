@@ -4,10 +4,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,14 +17,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.forusers.android.OrientationListener;
-import com.forusers.android.filter.LowPassFilter;
+import com.forusers.android.ValueWithUpdateFrequency;
 
 public class BigWords extends Activity implements OnClickListener {
+	private static final int MAX_MOVE_ANGLE = 30;
+	private static final int MIN_MOVE_ANGLE = 3;
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        wordsPerMinute = new ValueWithUpdateFrequency(200, 250);
         
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "DoNotDimScreen");
@@ -47,7 +50,7 @@ public class BigWords extends Activity implements OnClickListener {
 	@Override
     public void onResume() {
 		super.onResume();
-		setWpmText(wordsPerMinute, 0);
+		setWpmText(wordsPerMinute.getValue(), 0);
     }
 
 	@Override
@@ -70,11 +73,12 @@ public class BigWords extends Activity implements OnClickListener {
 			Log.i(TAG, "Attempted to start playing when already playing.");
 			return;
 		}
+		startListening();
+		
 		Button b = (Button) findViewById(R.id.play);
 		b.setText(R.string.stop);
 		
 		startTimer();
-		startListening();
 		wakeLock.acquire();
 	}
 
@@ -98,17 +102,17 @@ public class BigWords extends Activity implements OnClickListener {
 	}
 
 	private long wpmInDelayMillis() {
-		return 60000 / wordsPerMinute;
+		return 60000 / wordsPerMinute.getValue();
 	}
 
 	private void stopTimer() {
 		timerHandler.removeCallbacks(nextWordTask);
 	}
 
-	private void setWpmText(int wpm, int diff) {
+	private void setWpmText(int wpm, float diff) {
 		TextView t = (TextView) findViewById(R.id.wpm);
 		String format = getString(R.string.wpm_format);
-		t.setText(String.format("%+d %d wpm", diff, wpm));
+		t.setText(String.format("%.1f %d wpm", diff, wpm));
 	}
 	
 	private void startListening() {
@@ -132,15 +136,15 @@ public class BigWords extends Activity implements OnClickListener {
 		public void onSensorChanged(SensorEvent event) {
 			super.onSensorChanged(event);
 			
-			float diff = rollFilter.getValue() - startAngle.getValue();
-			if (Math.abs(diff) > 20) {
+			float diff = deltaAngle();
+			if (Math.abs(diff) > MAX_MOVE_ANGLE) {
 				stopPlaying();
-			} else if (diff < 10) {
-				wordsPerMinute++;
-				setWpmText(wordsPerMinute, +1);
-			} else if (diff > 10) {
-				wordsPerMinute--;
-				setWpmText(wordsPerMinute, -1);
+			} else if (diff < -MIN_MOVE_ANGLE) {
+				wordsPerMinute.Increment((int) -diff);
+				setWpmText(wordsPerMinute.getValue(), -diff);
+			} else if (diff > MIN_MOVE_ANGLE) {
+				wordsPerMinute.Increment((int) -diff);
+				setWpmText(wordsPerMinute.getValue(), -diff);
 			}
 		}
     };
@@ -162,6 +166,6 @@ public class BigWords extends Activity implements OnClickListener {
     private PowerManager.WakeLock wakeLock;
     private final Handler timerHandler = new Handler();
     private AtomicBoolean paused = new AtomicBoolean(true);
-    private int wordsPerMinute = 150;
+    private ValueWithUpdateFrequency wordsPerMinute;
     private long wordIndex = 0;
 }

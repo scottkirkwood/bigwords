@@ -10,7 +10,7 @@
   <style name="Buttons">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:minHeight">40px</item>
+    <item name="android:minHeight">70px</item>
     <item name="android:minWidth">150px</item>
   </style>
 </resources>
