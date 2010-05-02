@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BigWords</string>
-    <string name="text">Hello World, BigWords!</string>
+    <string name="text">BigWords</string>
+    <string name="play">Play</string>
+    <string name="stop">Pause</string>
+    <string name="back">Back</string>
 </resources>
