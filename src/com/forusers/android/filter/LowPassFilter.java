@@ -1,21 +1,28 @@
 package com.forusers.android.filter;
 
-public class AccelerometerFilter implements Filter {
-    public static float ACCELEROMETER_MIN_STEP = (float) 0.02;
-    public static float ACCELEROMETER_NOISE_ATTENUATION = (float) 3.0;
-    
+public class LowPassFilter implements Filter {
+	/**
+	 * See http://en.wikipedia.org/wiki/Low-pass_filter.
+	 */
     private float alpha;
     private float value;
     private long count;
     
     // Fast sample rate is about 50Hz, good cutoff is about 6Hz
-    public AccelerometerFilter(float sampleRate, float cutoffFrequency) {
+    public LowPassFilter(float sampleRate, float cutoffFrequency) {
     	float dt = (float) (1.0 / sampleRate);
     	float RC = (float) (1.0 / cutoffFrequency);
     	alpha = dt / (RC + dt);
-    	count = 0;
+    	reset();
     }
     
+    @Override
+    public void reset() {
+    	count = 0;
+    	value = 0;
+    }
+    
+    @Override
 	public void pushValue(float x) {
 		if (count++ == 0) {
 			value = x;
@@ -24,6 +31,7 @@ public class AccelerometerFilter implements Filter {
 		value = value + alpha * (x  - value);
 	}
 	
+    @Override
 	public float getValue() {
 		return value;
 	}

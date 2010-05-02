@@ -18,10 +18,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.forusers.android.filter.AccelerometerFilter;
+import com.forusers.android.OrientationListener;
+import com.forusers.android.filter.LowPassFilter;
 
 public class BigWords extends Activity implements OnClickListener {
-    private static final int INVALID_ANGLE = 999;
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +47,8 @@ public class BigWords extends Activity implements OnClickListener {
 	@Override
     public void onResume() {
 		super.onResume();
-		setWpmText();
+		setWpmText(wordsPerMinute, 0);
     }
-
 
 	@Override
     public void onPause() {
@@ -106,19 +105,20 @@ public class BigWords extends Activity implements OnClickListener {
 		timerHandler.removeCallbacks(nextWordTask);
 	}
 
-	private void setWpmText() {
+	private void setWpmText(int wpm, int diff) {
 		TextView t = (TextView) findViewById(R.id.wpm);
 		String format = getString(R.string.wpm_format);
-		t.setText(String.format(format, wordsPerMinute));
+		t.setText(String.format("%+d %d wpm", diff, wpm));
 	}
 	
 	private void startListening() {
+		orientationSensor.reset();
+		
 	    SensorManager sm;
 	    sm = (SensorManager) getSystemService(SENSOR_SERVICE);
 	     
 	    sm.registerListener(orientationSensor, sm.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 	    		SensorManager.SENSOR_DELAY_NORMAL, new Handler());
-	    startAngle = INVALID_ANGLE;
 	}
 	
 	private void stopListening() {
@@ -127,22 +127,21 @@ public class BigWords extends Activity implements OnClickListener {
 	    sm.unregisterListener(orientationSensor);	    	
 	}
 	
-    private final SensorEventListener orientationSensor = new SensorEventListener() {
-    	final AccelerometerFilter rollFilter = new AccelerometerFilter(50, 6);
-    	
-		@Override
-		public void onAccuracyChanged(Sensor arg0, int arg1) {
-			// Don't care
-		}
-
+    private final OrientationListener orientationSensor = new OrientationListener() {
 		@Override
 		public void onSensorChanged(SensorEvent event) {
-			if (event.sensor.getType() != Sensor.TYPE_ORIENTATION) {
-				return;
+			super.onSensorChanged(event);
+			
+			float diff = rollFilter.getValue() - startAngle.getValue();
+			if (Math.abs(diff) > 20) {
+				stopPlaying();
+			} else if (diff < 10) {
+				wordsPerMinute++;
+				setWpmText(wordsPerMinute, +1);
+			} else if (diff > 10) {
+				wordsPerMinute--;
+				setWpmText(wordsPerMinute, -1);
 			}
-			float roll = event.values[2];
-			rollFilter.pushValue(roll);
-			float diff = rollFilter.getValue() - startAngle;
 		}
     };
  
@@ -163,7 +162,6 @@ public class BigWords extends Activity implements OnClickListener {
     private PowerManager.WakeLock wakeLock;
     private final Handler timerHandler = new Handler();
     private AtomicBoolean paused = new AtomicBoolean(true);
-    private float startAngle = INVALID_ANGLE;
-    private int wordsPerMinute = 200;
+    private int wordsPerMinute = 150;
     private long wordIndex = 0;
 }
