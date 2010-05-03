@@ -5,12 +5,15 @@
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:typeface">serif</item>
-    <item name="android:textSize">100px</item>
+    <item name="android:textSize">90sp</item>
   </style>
   <style name="Buttons">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:minHeight">70px</item>
-    <item name="android:minWidth">150px</item>
+    <item name="android:minHeight">60sp</item>
+    <item name="android:minWidth">120sp</item>
   </style>
+  <drawable name="white_text">#fff</drawable>
+  <drawable name="red_text">#f99</drawable>
+  <drawable name="green_text">#9F9</drawable>
 </resources>

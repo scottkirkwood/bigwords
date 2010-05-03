@@ -68,7 +68,6 @@ public class BigWords extends Activity implements OnClickListener {
 	}
     
 	private void startPlaying() {
-		Log.i(TAG, "Start Playing");
 		if (!paused.compareAndSet(true, false)) {
 			Log.i(TAG, "Attempted to start playing when already playing.");
 			return;
@@ -83,7 +82,6 @@ public class BigWords extends Activity implements OnClickListener {
 	}
 
 	private void stopPlaying() {
-		Log.i(TAG, "Stop Playing");
 		if (!paused.compareAndSet(false, true)) {
 			Log.i(TAG, "Attempted to stop playing when already stopped.");
 			return;
@@ -112,7 +110,14 @@ public class BigWords extends Activity implements OnClickListener {
 	private void setWpmText(int wpm, float diff) {
 		TextView t = (TextView) findViewById(R.id.wpm);
 		String format = getString(R.string.wpm_format);
-		t.setText(String.format("%.1f %d wpm", diff, wpm));
+		int newColor = getResources().getColor(R.drawable.white_text);
+		if (diff > 0) {
+			newColor = getResources().getColor(R.drawable.green_text);
+		} else if (diff < 0) {
+			newColor = getResources().getColor(R.drawable.red_text);
+		}
+		t.setTextColor(newColor);
+		t.setText(String.format(format, wpm));
 	}
 	
 	private void startListening() {
@@ -145,6 +150,8 @@ public class BigWords extends Activity implements OnClickListener {
 			} else if (diff > MIN_MOVE_ANGLE) {
 				wordsPerMinute.Increment((int) -diff);
 				setWpmText(wordsPerMinute.getValue(), -diff);
+			} else if (Math.abs(diff) < MIN_MOVE_ANGLE) {
+				setWpmText(wordsPerMinute.getValue(), 0);
 			}
 		}
     };
