@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,6 +35,8 @@ public class BigWords extends Activity implements OnClickListener {
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "DoNotDimScreen");
 
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        
         textView = (TextView) findViewById(R.id.text);
         
         Button play = (Button) findViewById(R.id.play);
@@ -76,7 +79,8 @@ public class BigWords extends Activity implements OnClickListener {
 		
 		Button b = (Button) findViewById(R.id.play);
 		b.setText(R.string.stop);
-		
+
+		vibrator.vibrate(50);
 		startTimer();
 		wakeLock.acquire();
 	}
@@ -88,7 +92,8 @@ public class BigWords extends Activity implements OnClickListener {
 		}
 		Button b = (Button) findViewById(R.id.play);
 		b.setText(R.string.play);
-		
+
+		vibrator.vibrate(50);
 		stopTimer();
 		stopListening();
 		wakeLock.release();
@@ -175,4 +180,5 @@ public class BigWords extends Activity implements OnClickListener {
     private AtomicBoolean paused = new AtomicBoolean(true);
     private ValueWithUpdateFrequency wordsPerMinute;
     private long wordIndex = 0;
+    private Vibrator vibrator;
 }
