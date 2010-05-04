@@ -21,10 +21,10 @@ import com.forusers.android.OrientationListener;
 import com.forusers.android.ValueWithUpdateFrequency;
 
 public class BigWords extends Activity implements OnClickListener {
-	private static final int MAX_MOVE_ANGLE = 30;
-	private static final int MIN_MOVE_ANGLE = 3;
-	
-	/** Called when the activity is first created. */
+    private static final int MAX_MOVE_ANGLE = 30;
+    private static final int MIN_MOVE_ANGLE = 3;
+    
+    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,134 +43,134 @@ public class BigWords extends Activity implements OnClickListener {
         play.setOnClickListener(this);
     }
     
-	@Override
-	public void onClick(View v) {
-		if (R.id.play == v.getId()) {
-			onPlayOrPause();
-		}
-	}
-
-	@Override
-    public void onResume() {
-		super.onResume();
-		setWpmText(wordsPerMinute.getValue(), 0);
+    @Override
+    public void onClick(View v) {
+        if (R.id.play == v.getId()) {
+            onPlayOrPause();
+        }
     }
 
-	@Override
+    @Override
+    public void onResume() {
+        super.onResume();
+        setWpmText(wordsPerMinute.getValue(), 0);
+    }
+
+    @Override
     public void onPause() {
-		super.onPause();
-		stopPlaying();
+        super.onPause();
+        stopPlaying();
     }
 
     private void onPlayOrPause() {
-    	if (paused.get()) {
-    		startPlaying();
-    	} else {
-    		stopPlaying();
-    	}
-	}
+        if (paused.get()) {
+            startPlaying();
+        } else {
+            stopPlaying();
+        }
+    }
     
-	private void startPlaying() {
-		if (!paused.compareAndSet(true, false)) {
-			Log.i(TAG, "Attempted to start playing when already playing.");
-			return;
-		}
-		startListening();
-		
-		Button b = (Button) findViewById(R.id.play);
-		b.setText(R.string.stop);
+    private void startPlaying() {
+        if (!paused.compareAndSet(true, false)) {
+            Log.i(TAG, "Attempted to start playing when already playing.");
+            return;
+        }
+        startListening();
+        
+        Button b = (Button) findViewById(R.id.play);
+        b.setText(R.string.stop);
 
-		vibrator.vibrate(50);
-		startTimer();
-		wakeLock.acquire();
-	}
+        vibrator.vibrate(50);
+        startTimer();
+        wakeLock.acquire();
+    }
 
-	private void stopPlaying() {
-		if (!paused.compareAndSet(false, true)) {
-			Log.i(TAG, "Attempted to stop playing when already stopped.");
-			return;
-		}
-		Button b = (Button) findViewById(R.id.play);
-		b.setText(R.string.play);
+    private void stopPlaying() {
+        if (!paused.compareAndSet(false, true)) {
+            Log.i(TAG, "Attempted to stop playing when already stopped.");
+            return;
+        }
+        Button b = (Button) findViewById(R.id.play);
+        b.setText(R.string.play);
 
-		vibrator.vibrate(50);
-		stopTimer();
-		stopListening();
-		wakeLock.release();
-	}
-	
-	private void startTimer() {
-		timerHandler.removeCallbacks(nextWordTask);  // Just in case
-		timerHandler.postDelayed(nextWordTask, wpmInDelayMillis());
-	}
+        vibrator.vibrate(50);
+        stopTimer();
+        stopListening();
+        wakeLock.release();
+    }
+    
+    private void startTimer() {
+        timerHandler.removeCallbacks(nextWordTask);  // Just in case
+        timerHandler.postDelayed(nextWordTask, wpmInDelayMillis());
+    }
 
-	private long wpmInDelayMillis() {
-		return 60000 / wordsPerMinute.getValue();
-	}
+    private long wpmInDelayMillis() {
+        return 60000 / wordsPerMinute.getValue();
+    }
 
-	private void stopTimer() {
-		timerHandler.removeCallbacks(nextWordTask);
-	}
+    private void stopTimer() {
+        timerHandler.removeCallbacks(nextWordTask);
+    }
 
-	private void setWpmText(int wpm, float diff) {
-		TextView t = (TextView) findViewById(R.id.wpm);
-		String format = getString(R.string.wpm_format);
-		int newColor = getResources().getColor(R.drawable.white_text);
-		if (diff > 0) {
-			newColor = getResources().getColor(R.drawable.green_text);
-		} else if (diff < 0) {
-			newColor = getResources().getColor(R.drawable.red_text);
-		}
-		t.setTextColor(newColor);
-		t.setText(String.format(format, wpm));
-	}
-	
-	private void startListening() {
-		orientationSensor.reset();
-		
-	    SensorManager sm;
-	    sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-	     
-	    sm.registerListener(orientationSensor, sm.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-	    		SensorManager.SENSOR_DELAY_NORMAL, new Handler());
-	}
-	
-	private void stopListening() {
-	    SensorManager sm;
-	    sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-	    sm.unregisterListener(orientationSensor);	    	
-	}
-	
+    private void setWpmText(int wpm, float diff) {
+        TextView t = (TextView) findViewById(R.id.wpm);
+        String format = getString(R.string.wpm_format);
+        int newColor = getResources().getColor(R.drawable.white_text);
+        if (diff > 0) {
+            newColor = getResources().getColor(R.drawable.green_text);
+        } else if (diff < 0) {
+            newColor = getResources().getColor(R.drawable.red_text);
+        }
+        t.setTextColor(newColor);
+        t.setText(String.format(format, wpm));
+    }
+    
+    private void startListening() {
+        orientationSensor.reset();
+        
+        SensorManager sm;
+        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+         
+        sm.registerListener(orientationSensor, sm.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+                SensorManager.SENSOR_DELAY_NORMAL, new Handler());
+    }
+    
+    private void stopListening() {
+        SensorManager sm;
+        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sm.unregisterListener(orientationSensor);            
+    }
+    
     private final OrientationListener orientationSensor = new OrientationListener() {
-		@Override
-		public void onSensorChanged(SensorEvent event) {
-			super.onSensorChanged(event);
-			
-			float diff = deltaAngle();
-			if (Math.abs(diff) > MAX_MOVE_ANGLE) {
-				stopPlaying();
-			} else if (diff < -MIN_MOVE_ANGLE) {
-				wordsPerMinute.Increment((int) -diff);
-				setWpmText(wordsPerMinute.getValue(), -diff);
-			} else if (diff > MIN_MOVE_ANGLE) {
-				wordsPerMinute.Increment((int) -diff);
-				setWpmText(wordsPerMinute.getValue(), -diff);
-			} else if (Math.abs(diff) < MIN_MOVE_ANGLE) {
-				setWpmText(wordsPerMinute.getValue(), 0);
-			}
-		}
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            super.onSensorChanged(event);
+            
+            float diff = deltaAngle();
+            if (Math.abs(diff) > MAX_MOVE_ANGLE) {
+                stopPlaying();
+            } else if (diff < -MIN_MOVE_ANGLE) {
+                wordsPerMinute.Increment((int) -diff);
+                setWpmText(wordsPerMinute.getValue(), -diff);
+            } else if (diff > MIN_MOVE_ANGLE) {
+                wordsPerMinute.Increment((int) -diff);
+                setWpmText(wordsPerMinute.getValue(), -diff);
+            } else if (Math.abs(diff) < MIN_MOVE_ANGLE) {
+                setWpmText(wordsPerMinute.getValue(), 0);
+            }
+        }
     };
  
     private final Runnable nextWordTask = new Runnable() {
-		@Override
-		public void run() {
-			if (textView == null) {
-				Log.e(TAG, "Missing textview in nextWordTask");
-				return;
-			}
-			textView.setText(String.format("Word%03d", wordIndex++));			
-			timerHandler.postDelayed(this, wpmInDelayMillis());
-		}
+        @Override
+        public void run() {
+            if (textView == null) {
+                Log.e(TAG, "Missing textview in nextWordTask");
+                return;
+            }
+            textView.setText(String.format("Word%03d", wordIndex++));            
+            timerHandler.postDelayed(this, wpmInDelayMillis());
+        }
     };
     
     private static final String TAG = "BigWords";

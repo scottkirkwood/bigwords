@@ -4,5 +4,9 @@
         <attr name="textFormat" format="string" />
         <attr name="textColor" format="color" />
         <attr name="textSize" format="dimension" />
+        <attr name="backgroundColor" format="color" />
+        <attr name="foregroundColor" format="color" />
+        <attr name="min" format="string" />
+        <attr name="max" format="string" />
     </declare-styleable>
 </resources>

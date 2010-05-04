@@ -35,18 +35,30 @@ public class HorizontalProgressBar extends View {
 		initProgressBar();
 	}
 
-
 	public HorizontalProgressBar(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initProgressBar();
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.HorizontalProgressBar);
 
-        // Retrieve the color(s) to be used for this view and apply them.
-        // Note, if you only care about supporting a single color, that you
-        // can instead call a.getColor() and pass that to setTextColor().
         setTextColor(a.getColor(R.styleable.HorizontalProgressBar_textColor, 0xFF000000));
 
+        setBackgroundColor(a.getColor(R.styleable.HorizontalProgressBar_backgroundColor, 0xFF000000));
+
+        setForegroundColor(a.getColor(R.styleable.HorizontalProgressBar_foregroundColor, 0xFF000000));
+
+        String formatText = a.getString(R.styleable.HorizontalProgressBar_textFormat);
+        if (formatText != null) {
+        	setFormatText(formatText);
+        }
+
+        setMin(a.getInt(R.styleable.HorizontalProgressBar_min, 0));
+        
+        int newMax = a.getInt(R.styleable.HorizontalProgressBar_max, -1);
+        if (newMax != -1) {
+        	setMax(newMax);
+        }
+        
         int textSize = a.getDimensionPixelOffset(R.styleable.HorizontalProgressBar_textSize, 0);
         if (textSize > 0) {
             setTextSize(textSize);
@@ -55,8 +67,15 @@ public class HorizontalProgressBar extends View {
         a.recycle();
 	}
 
+	private void setFormatText(String newFormatText) {
+		formatText = newFormatText;
+		requestLayout();
+		invalidate();
+	}
+
 	private void setTextSize(int textSize) {
 		paint.setTextSize(textSize);
+		requestLayout();
 		invalidate();
 	}
 
@@ -73,7 +92,7 @@ public class HorizontalProgressBar extends View {
 		setPadding(2, 2, 2, 2);
 		min = 0;
 		max = 100;
-		backgroundColor =0xFF668800;
+		backgroundColor = 0xFF668800;
 		foregroundColor = 0xFF9977FF;
 		textColor = 0xFFFFFFFF;
 		pos = 0;
@@ -87,14 +106,14 @@ public class HorizontalProgressBar extends View {
 	 * 
 	 * @param pos
 	 */
-	public void setPosition(int pos) {
-		if (pos > max) {
-			pos = max;
+	public void setPosition(int newPos) {
+		if (newPos > max) {
+			newPos = max;
 		}
-		if (pos < min) {
-			pos = min;
+		if (newPos < min) {
+			newPos = min;
 		}
-		pos = pos;
+		pos = newPos;
 		invalidate();
 	}
 
@@ -129,9 +148,11 @@ public class HorizontalProgressBar extends View {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		canvas.drawColor(backgroundColor);
+		
         paint.setColor(foregroundColor);        
-        int truepos = (int) (((float)pos/(float)(max - min)) * getWidth());
+        int truepos = (int) (((float) pos / (max - min)) * getWidth());
         canvas.drawRect(0, 0, truepos, getHeight(), paint);		
+        
         paint.setColor(textColor);
         String text = getText();
         canvas.drawText(text, textX, textY, paint);
@@ -180,4 +201,17 @@ public class HorizontalProgressBar extends View {
     	textX = (result - textWidth) / 2;
     	return result;
  	}
+	
+	@Override
+	public void setBackgroundColor(int color) {
+		super.setBackgroundColor(color);
+		backgroundColor = color;
+	}
+	
+	private void setForegroundColor(int color) {
+		foregroundColor = color;
+		invalidate();
+	}
+
+
 }
