@@ -2,6 +2,7 @@ package com.forusers.android.bigwords;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.forusers.android.ChangeIndicator;
 import com.forusers.android.HorizontalProgressBar;
 
 import android.app.Activity;
@@ -117,6 +118,9 @@ public class BigWords extends Activity implements OnClickListener {
     private void setWpmText(int wpm, float diff) {
         HorizontalProgressBar p = (HorizontalProgressBar) findViewById(R.id.wpm);
         p.setPosition(wpm);
+
+        ChangeIndicator ci = (ChangeIndicator) findViewById(R.id.tilt);
+        ci.setPosition((int) diff * 20);
     }
     
     private void startListening() {

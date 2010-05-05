@@ -16,7 +16,7 @@ import android.view.View;
 import com.forusers.android.bigwords.R;
 
 /**
- * A widget that gives feedback that a tilt was registered.
+ * A widget that draws a horizontal progress bar with text in the center.
  * 
  * @author scottkirkwood
  */
@@ -33,11 +33,14 @@ public class HorizontalProgressBar extends View {
                R.styleable.HorizontalProgressBar);
 
         setTextColor(a.getColor(R.styleable.HorizontalProgressBar_textColor, DEFAULT_TEXT_COLOR));
-        setSecondTextColor(a.getColor(R.styleable.HorizontalProgressBar_secondTextColor, DEFAULT_TEXT_COLOR2));
+        setSecondTextColor(a.getColor(R.styleable.HorizontalProgressBar_secondTextColor,
+                           DEFAULT_TEXT_COLOR2));
 
-        setBackgroundColor(a.getColor(R.styleable.HorizontalProgressBar_backgroundColor, DEFAULT_BK_COLOR));
+        setBackgroundColor(a.getColor(R.styleable.HorizontalProgressBar_backgroundColor,
+                           DEFAULT_BK_COLOR));
 
-        setForegroundColor(a.getColor(R.styleable.HorizontalProgressBar_foregroundColor, DEFAULT_FG_COLOR));
+        setForegroundColor(a.getColor(R.styleable.HorizontalProgressBar_foregroundColor,
+                           DEFAULT_FG_COLOR));
 
         String formatText = a.getString(R.styleable.HorizontalProgressBar_textFormat);
         if (formatText != null) {
@@ -46,7 +49,8 @@ public class HorizontalProgressBar extends View {
 
         setMin(a.getInt(R.styleable.HorizontalProgressBar_min, DEFAULT_MIN));
         setMax(a.getInt(R.styleable.HorizontalProgressBar_max, DEFAULT_MAX));
-        setTextSize(a.getDimensionPixelSize(R.styleable.HorizontalProgressBar_textSize, DEFAULT_TEXT_SIZE));
+        setTextSize(a.getDimensionPixelSize(R.styleable.HorizontalProgressBar_textSize,
+                    DEFAULT_TEXT_SIZE));
 
         a.recycle();
     }
@@ -86,7 +90,7 @@ public class HorizontalProgressBar extends View {
         foregroundColor = DEFAULT_FG_COLOR;
         textColor = DEFAULT_TEXT_COLOR;
         secondTextColor = DEFAULT_TEXT_COLOR2;
-        pos = 45;
+        pos = 0;
         textX = 0;
         textY = 0;
         formatText = "%d%% done";
@@ -103,9 +107,11 @@ public class HorizontalProgressBar extends View {
         if (newPos < min) {
             newPos = min;
         }
+        if (calculateXPos(pos) != calculateXPos(newPos)) {
+          // draw only if theres at least one pixel changed.
+          invalidate();
+        }
         pos = newPos;
-        Log.i(TAG, "setting pos: " + pos);
-        invalidate();
     }
 
     public void setMin(int newMin) {
@@ -179,7 +185,7 @@ public class HorizontalProgressBar extends View {
                 result = Math.min(result, specSize);
             }
         }
-        textX = result / 2;
+        textX = getPaddingLeft() + (result - getPaddingLeft() - getPaddingRight()) / 2;
         return result;
     }
     
@@ -194,28 +200,39 @@ public class HorizontalProgressBar extends View {
         invalidate();
     }
 
+    private int calculateXPos(int newPos) {
+        float barWidth = getWidth() - getPaddingLeft() - getPaddingRight();
+        return getPaddingLeft() + (int) ((barWidth * (newPos - min)) / (max - min) );
+    }
+
     /* (non-Javadoc)
      * @see android.view.View#onDraw(android.graphics.Canvas)
      */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-         
-        int xpos = (int) (((float) getWidth() * (pos - min)) / (max - min) );
+       
+        int xpos = calculateXPos(pos);
+        int bottom = getHeight() - getPaddingBottom();
+        int right = getWidth() - getPaddingRight();
         String text = getText();
 
         paint.setColor(backgroundColor);
-        canvas.drawRect(xpos, 0, getWidth(), getHeight(), paint);
+        canvas.drawRect(xpos, getPaddingTop(), 
+                        right, bottom, paint);
 
         paint.setColor(foregroundColor);        
-        canvas.drawRect(0, 0, xpos, getHeight(), paint);          
+        canvas.drawRect(getPaddingLeft(), getPaddingTop(),
+                        xpos, bottom, paint);
 
         paint.setColor(secondTextColor);
-        canvas.clipRect(xpos, 0, getWidth(), getHeight(), Region.Op.REPLACE);
+        canvas.clipRect(xpos, getPaddingTop(),
+                        right, bottom, Region.Op.REPLACE);
         canvas.drawText(text, textX, textY, paint);
         
         paint.setColor(textColor);
-        canvas.clipRect(0, 0, xpos, getHeight(), Region.Op.REPLACE);
+        canvas.clipRect(getPaddingLeft(), getPaddingTop(), xpos,
+                        bottom, Region.Op.REPLACE);
         canvas.drawText(text, textX, textY, paint);
     }
 

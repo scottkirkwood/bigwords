@@ -10,4 +10,9 @@
         <attr name="min" format="integer" />
         <attr name="max" format="integer" />
     </declare-styleable>
+    <declare-styleable name="ChangeIndicator">
+        <!-- <attr name="backgroundColor" format="color" /> -->
+        <!-- <attr name="foregroundColor" format="color" /> -->
+        <!-- <attr name="max" format="integer" /> -->
+    </declare-styleable>
 </resources>

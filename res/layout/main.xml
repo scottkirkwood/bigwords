@@ -19,9 +19,11 @@
     android:id="@+id/text"
     style="@style/BigWord"
     android:text="@string/text"/>
-  <TextView
+  <com.forusers.android.ChangeIndicator
     android:id="@+id/tilt"
-    android:text=""
+    app:foregroundColor="#EEE"
+    app:backgroundColor="#555"
+    android:paddingRight="2dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
@@ -32,11 +34,12 @@
      app:textFormat="@string/wpm_format"
      app:min="100"
      app:max="800"
+     app:textSize="10sp"
      app:textColor="#111"
      app:foregroundColor="#EEE"
      app:secondTextColor="#EEE"
      app:backgroundColor="#555"
-     android:paddingLeft="10sp"
+     android:paddingLeft="10dp"
      android:layout_width="wrap_content"
      android:layout_height="wrap_content"
      android:layout_toRightOf="@+id/tilt"
