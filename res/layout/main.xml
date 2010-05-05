@@ -20,22 +20,26 @@
     style="@style/BigWord"
     android:text="@string/text"/>
   <TextView
-    android:id="@+id/wpm"
-    android:text="@string/empty_wpm"
+    android:id="@+id/tilt"
+    android:text=""
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
     android:layout_alignParentBottom="true"
     />
    <com.forusers.android.HorizontalProgressBar
-     android:id="@+id/progress"
-     app:max="100"
-     android:progress="20"
+     android:id="@+id/wpm"
+     app:textFormat="@string/wpm_format"
+     app:min="100"
+     app:max="800"
+     app:textColor="#111"
+     app:foregroundColor="#EEE"
+     app:secondTextColor="#EEE"
+     app:backgroundColor="#555"
      android:paddingLeft="10sp"
      android:layout_width="wrap_content"
      android:layout_height="wrap_content"
-     android:layout_toRightOf="@+id/wpm"
+     android:layout_toRightOf="@+id/tilt"
      android:layout_alignParentBottom="true"
-     android:minWidth="150sp"
-     android:maxHeight="2sp"/>
+     android:minWidth="200sp" />
 </RelativeLayout>

@@ -1,0 +1,4 @@
+syntax: regexp
+.*\.class$
+^gen/.*
+^bin/.*

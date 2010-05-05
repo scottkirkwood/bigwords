@@ -2,6 +2,8 @@ package com.forusers.android.bigwords;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.forusers.android.HorizontalProgressBar;
+
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -113,16 +115,8 @@ public class BigWords extends Activity implements OnClickListener {
     }
 
     private void setWpmText(int wpm, float diff) {
-        TextView t = (TextView) findViewById(R.id.wpm);
-        String format = getString(R.string.wpm_format);
-        int newColor = getResources().getColor(R.drawable.white_text);
-        if (diff > 0) {
-            newColor = getResources().getColor(R.drawable.green_text);
-        } else if (diff < 0) {
-            newColor = getResources().getColor(R.drawable.red_text);
-        }
-        t.setTextColor(newColor);
-        t.setText(String.format(format, wpm));
+        HorizontalProgressBar p = (HorizontalProgressBar) findViewById(R.id.wpm);
+        p.setPosition(wpm);
     }
     
     private void startListening() {
