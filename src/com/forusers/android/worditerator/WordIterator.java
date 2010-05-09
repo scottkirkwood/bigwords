@@ -1,9 +1,8 @@
 package com.forusers.android.worditerator;
 
-public interface WordIterator {
+import java.util.Iterator;
+
+public interface WordIterator extends Iterator<String> {
     public boolean open(String fname);
     public void close();
-    public String nextWord();
-    public void gotoIndex(int word);
-    public int getWordIndex();
 }

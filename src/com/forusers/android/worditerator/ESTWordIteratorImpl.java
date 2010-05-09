@@ -15,7 +15,7 @@ public class ESTWordIteratorImpl implements WordIterator {
         + "The theme. The first step in dissecting a story is euthanizing it: \"What is the theme of this story?\" \n"
         + "\n"
         + "Let me kill my story before I start it, so that I can dissect it and understand it. The theme of this story is: \"Would you rather be smart or happy?\"";
-        
+
     public ESTWordIteratorImpl() {
     }
 
@@ -29,7 +29,7 @@ public class ESTWordIteratorImpl implements WordIterator {
 
     public String nextWord() {
         index++;
-        return String.format("Word%03d", index);            
+        return String.format("Word%03d", index);
     }
 
     public void gotoIndex(int word) {
@@ -41,4 +41,22 @@ public class ESTWordIteratorImpl implements WordIterator {
     }
 
     private int index;
+
+    @Override
+    public boolean hasNext() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public String next() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void remove() {
+        // TODO Auto-generated method stub
+        
+    }
 }
