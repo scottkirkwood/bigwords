@@ -5,19 +5,23 @@ public class WordCountIteratorImpl implements WordIterator {
         index = 0;
     }
 
+    @Override
     public boolean open(String fname) {
         index = 0;
         return true;
     }
 
+    @Override
     public void close() {
     }
 
+    @Override
     public void gotoIndex(int word) {
         index = word;
     }
 
-    public int getWordIndex() {
+    @Override
+    public int getIndex() {
         return index;
     }
 

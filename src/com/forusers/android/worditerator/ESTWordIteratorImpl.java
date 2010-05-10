@@ -1,5 +1,9 @@
 package com.forusers.android.worditerator;
 
+import java.util.StringTokenizer;
+
+import android.util.Log;
+
 public class ESTWordIteratorImpl implements WordIterator {
     static final String text = "Eastern Standard Tribe\n"
         + "\n"
@@ -16,47 +20,80 @@ public class ESTWordIteratorImpl implements WordIterator {
         + "\n"
         + "Let me kill my story before I start it, so that I can dissect it and understand it. The theme of this story is: \"Would you rather be smart or happy?\"";
 
+    static final String DELIMITERS = ",.;:?!)\n%&/\n\t\r ";
+
     public ESTWordIteratorImpl() {
+        open(null);
     }
 
+    @Override
     public boolean open(String fname) {
+        tokenizer = new StringTokenizer(text, DELIMITERS, true);
         index = 0;
         return true;
     }
 
+    @Override
     public void close() {
     }
 
-    public String nextWord() {
-        index++;
-        return String.format("Word%03d", index);
-    }
-
+    @Override
     public void gotoIndex(int word) {
         index = word;
     }
 
-    public int getWordIndex() {
+    @Override
+    public int getIndex() {
         return index;
     }
 
-    private int index;
-
     @Override
     public boolean hasNext() {
-        // TODO Auto-generated method stub
-        return false;
+        return tokenizer.hasMoreTokens();
     }
 
     @Override
     public String next() {
-        // TODO Auto-generated method stub
-        return null;
+        index++;
+        
+        StringBuffer buffer = new StringBuffer();
+        while (true) {
+            String word = tokenizer.nextToken();
+            if (isDelim(word)) {
+                buffer.append(stripBlanks(word));
+                if (buffer.length() > 0) {
+                    break;
+                }
+            } else {
+                buffer.append(word);
+            }
+        }
+        Log.i(TAG, "word: '" + buffer.toString() + "'");
+        return buffer.toString();
+    }
+
+    private boolean isDelim(String word) {
+        if (word.length() == 0) {
+            return false;
+        }
+        for (int i = 0; i < word.length(); ++i) {
+            if (DELIMITERS.contains(word.substring(i, i + 1))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String stripBlanks(String word) {
+        return word.replaceAll("[\n\r\t ]", "");
     }
 
     @Override
     public void remove() {
-        // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException();
     }
+
+    private static final String TAG = "BigWords";
+    private int index;
+    private StringTokenizer tokenizer;
 }

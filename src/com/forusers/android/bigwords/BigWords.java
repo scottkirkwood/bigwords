@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.forusers.android.ChangeIndicator;
 import com.forusers.android.HorizontalProgressBar;
-import com.forusers.android.worditerator.WordCountIteratorImpl;
+import com.forusers.android.worditerator.ESTWordIteratorImpl;
 import com.forusers.android.worditerator.WordIterator;
 
 import android.app.Activity;
@@ -58,7 +58,7 @@ public class BigWords extends Activity implements OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        wordIter = new WordCountIteratorImpl();
+        wordIter = new ESTWordIteratorImpl();
         wordIter.open("");
         setWpmText(wordsPerMinute.getValue(), 0);
     }
@@ -170,7 +170,7 @@ public class BigWords extends Activity implements OnClickListener {
                 Log.e(TAG, "Missing textview in nextWordTask");
                 return;
             }
-            String word = wordIter.nextWord();
+            String word = wordIter.next();
             if (word == null) {
                 word = "Fin";
             }

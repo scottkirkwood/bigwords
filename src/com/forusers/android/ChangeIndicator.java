@@ -7,16 +7,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Region;
-
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.forusers.android.bigwords.R;
-
-import android.view.WindowManager;
 
 /**
  * A widget that gives feedback that a tilt was registered.
