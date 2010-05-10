@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.forusers.android.ChangeIndicator;
 import com.forusers.android.HorizontalProgressBar;
 import com.forusers.android.worditerator.ESTWordIteratorImpl;
+import com.forusers.android.worditerator.Word;
 import com.forusers.android.worditerator.WordIterator;
 
 import android.app.Activity;
@@ -26,9 +27,6 @@ import com.forusers.android.OrientationListener;
 import com.forusers.android.ValueWithUpdateFrequency;
 
 public class BigWords extends Activity implements OnClickListener {
-    private static final int MAX_MOVE_ANGLE = 30;
-    private static final int MIN_MOVE_ANGLE = 3;
-    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +41,7 @@ public class BigWords extends Activity implements OnClickListener {
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         
         textView = (TextView) findViewById(R.id.text);
+        textView.setOnClickListener(this);
         
         Button play = (Button) findViewById(R.id.play);
         play.setOnClickListener(this);
@@ -52,6 +51,10 @@ public class BigWords extends Activity implements OnClickListener {
     public void onClick(View v) {
         if (R.id.play == v.getId()) {
             onPlayOrPause();
+        } else if (R.id.text == v.getId()) {
+            if (!paused.get()) {
+                stopPlaying();
+            }
         }
     }
 
@@ -170,15 +173,19 @@ public class BigWords extends Activity implements OnClickListener {
                 Log.e(TAG, "Missing textview in nextWordTask");
                 return;
             }
-            String word = wordIter.next();
+            Word word = wordIter.next();
             if (word == null) {
-                word = "Fin";
+                textView.setText("Fin!");
+            } else {
+                textView.setText(word.getWord());
             }
-            textView.setText(word);
 
             timerHandler.postDelayed(this, wpmInDelayMillis());
         }
     };
+    
+    private static final int MAX_MOVE_ANGLE = 30;
+    private static final int MIN_MOVE_ANGLE = 3;
     
     private static final String TAG = "BigWords";
     private TextView textView;

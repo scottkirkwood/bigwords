@@ -4,4 +4,5 @@ public interface Filter {
     public void pushValue(float x);
     public void reset();
     public float getValue();
+    public long getCount();
 }

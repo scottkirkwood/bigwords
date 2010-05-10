@@ -36,6 +36,7 @@ public class LowPassFilter implements Filter {
         return value;
     }
     
+    @Override
     public long getCount() {
         return count;
     }

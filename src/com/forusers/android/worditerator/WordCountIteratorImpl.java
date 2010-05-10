@@ -31,9 +31,9 @@ public class WordCountIteratorImpl implements WordIterator {
     }
 
     @Override
-    public String next() {
+    public Word next() {
         index++;
-        return String.format("Word%03d", index);
+        return word.setWord(String.format("Word%03d", index));
     }
 
     @Override
@@ -42,4 +42,5 @@ public class WordCountIteratorImpl implements WordIterator {
     }
 
     private int index;
+    private Word word = new Word();
 }

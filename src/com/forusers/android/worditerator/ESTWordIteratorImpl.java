@@ -1,5 +1,6 @@
 package com.forusers.android.worditerator;
 
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import android.util.Log;
@@ -53,23 +54,30 @@ public class ESTWordIteratorImpl implements WordIterator {
     }
 
     @Override
-    public String next() {
+    public Word next() {
+        if (!hasNext()) {
+            return null;
+        }
         index++;
         
         StringBuffer buffer = new StringBuffer();
-        while (true) {
-            String word = tokenizer.nextToken();
-            if (isDelim(word)) {
-                buffer.append(stripBlanks(word));
-                if (buffer.length() > 0) {
-                    break;
+        try {
+            while (true) {
+                String word = tokenizer.nextToken();
+                if (isDelim(word)) {
+                    buffer.append(stripBlanks(word));
+                    if (buffer.length() > 0) {
+                        break;
+                    }
+                } else {
+                    buffer.append(word);
                 }
-            } else {
-                buffer.append(word);
             }
+        } catch (NoSuchElementException e) {
+            // done!
         }
         Log.i(TAG, "word: '" + buffer.toString() + "'");
-        return buffer.toString();
+        return word.setWord(buffer.toString());
     }
 
     private boolean isDelim(String word) {
@@ -96,4 +104,5 @@ public class ESTWordIteratorImpl implements WordIterator {
     private static final String TAG = "BigWords";
     private int index;
     private StringTokenizer tokenizer;
+    private Word word = new Word();
 }

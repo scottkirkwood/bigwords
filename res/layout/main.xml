@@ -33,7 +33,7 @@
      android:id="@+id/wpm"
      app:textFormat="@string/wpm_format"
      app:min="100"
-     app:max="800"
+     app:max="999"
      app:textSize="10sp"
      app:textColor="#111"
      app:foregroundColor="#EEE"
@@ -44,5 +44,5 @@
      android:layout_height="wrap_content"
      android:layout_toRightOf="@+id/tilt"
      android:layout_alignParentBottom="true"
-     android:minWidth="200sp" />
+     android:minWidth="300sp" />
 </RelativeLayout>
