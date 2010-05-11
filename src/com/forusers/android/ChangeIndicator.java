@@ -17,10 +17,25 @@ import com.forusers.android.bigwords.R;
 
 /**
  * A widget that gives feedback that a tilt was registered.
- * 
+ *
  * @author scottkirkwood
  */
 public class ChangeIndicator extends View {
+    private static int DEFAULT_BK_COLOR = 0xFF000000;
+    private static int DEFAULT_FG_COLOR = 0xFFEEEEEE;
+    private static int DEFAULT_MAX = 100;
+    private static int DEFAULT_WIDTH_DP = 16;
+    private static int DEFAULT_HEIGHT_DP = 16;
+    private static String TAG = "ChangeIndicator";
+    private int backgroundColor;
+    private int foregroundColor;
+    private float displayDensity;
+    private int pxWidth;
+    private int pxHeight;
+    private int pos;  // Position, postive goes up, negative goes down.
+    private int max;  // Largest positive or negative value pos can attain
+    private Paint paint;
+
     public ChangeIndicator(Context context) {
         super(context);
         initProgressBar();
@@ -173,19 +188,4 @@ public class ChangeIndicator extends View {
         canvas.drawRect(getPaddingLeft(), vMiddle - vThickTop,
                         getWidth() - getPaddingRight(), vMiddle + vThickBottom, paint);          
     }
-
-    private static int DEFAULT_BK_COLOR = 0xFF000000;
-    private static int DEFAULT_FG_COLOR = 0xFFEEEEEE;
-    private static int DEFAULT_MAX = 100;
-    private static int DEFAULT_WIDTH_DP = 16;
-    private static int DEFAULT_HEIGHT_DP = 16;
-    private static String TAG = "ChangeIndicator";
-    private int backgroundColor;
-    private int foregroundColor;
-    private float displayDensity;
-    private int pxWidth;
-    private int pxHeight;
-    private int pos;  // Position, postive goes up, negative goes down.
-    private int max;  // Largest positive or negative value pos can attain
-    private Paint paint;
 }

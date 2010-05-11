@@ -27,6 +27,17 @@ import com.forusers.android.OrientationListener;
 import com.forusers.android.ValueWithUpdateFrequency;
 
 public class BigWords extends Activity implements OnClickListener {
+    private static final int MAX_MOVE_ANGLE = 30;
+    private static final int MIN_MOVE_ANGLE = 3;
+    
+    private static final String TAG = "BigWords";
+    private TextView textView;
+    private PowerManager.WakeLock wakeLock;
+    private final Handler timerHandler = new Handler();
+    private AtomicBoolean paused = new AtomicBoolean(true);
+    private ValueWithUpdateFrequency wordsPerMinute;
+    private Vibrator vibrator;
+    private WordIterator wordIter;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -183,16 +194,4 @@ public class BigWords extends Activity implements OnClickListener {
             timerHandler.postDelayed(this, wpmInDelayMillis());
         }
     };
-    
-    private static final int MAX_MOVE_ANGLE = 30;
-    private static final int MIN_MOVE_ANGLE = 3;
-    
-    private static final String TAG = "BigWords";
-    private TextView textView;
-    private PowerManager.WakeLock wakeLock;
-    private final Handler timerHandler = new Handler();
-    private AtomicBoolean paused = new AtomicBoolean(true);
-    private ValueWithUpdateFrequency wordsPerMinute;
-    private Vibrator vibrator;
-    private WordIterator wordIter;
 }

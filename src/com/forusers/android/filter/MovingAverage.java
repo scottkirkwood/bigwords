@@ -9,6 +9,10 @@ package com.forusers.android.filter;
  * @author scottkirkwood
  */
 public class MovingAverage implements Filter {
+    private float circularBuffer[];
+    private float mean;
+    private int circularIndex;
+    private int count;
 
     public MovingAverage(int size) {
         circularBuffer = new float[size];
@@ -65,9 +69,4 @@ public class MovingAverage implements Filter {
         }
         return curIndex + 1;
     }
-
-    private float circularBuffer[];
-    private float mean;
-    private int circularIndex;
-    private int count;
 }

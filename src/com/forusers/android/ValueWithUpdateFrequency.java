@@ -9,6 +9,10 @@ import android.os.SystemClock;
  * @param <T>
  */
 public class ValueWithUpdateFrequency {
+    private int value;
+    private long lastUpdate;
+    private int msDelay;
+
     public ValueWithUpdateFrequency(int startValue, int msBetweenUpdates) {
         value = startValue;
         msDelay = msBetweenUpdates;
@@ -21,14 +25,14 @@ public class ValueWithUpdateFrequency {
     public int getValue() {
         return value;
     }
-    
+
     public boolean Increment(int byWhat) {
         return updateValue(value + byWhat);
     }
-    
+
     /**
      * Updates the value if enough time has elapsed since the last update.
-     * 
+     *
      * @param newValue
      * @return True if the value was changed, false otherwise.
      */
@@ -41,8 +45,4 @@ public class ValueWithUpdateFrequency {
         }
         return false;
     }
-    
-    private int value;
-    long lastUpdate;
-    int msDelay;
 }

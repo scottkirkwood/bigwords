@@ -6,6 +6,10 @@ import java.util.StringTokenizer;
 import android.util.Log;
 
 public class ESTWordIteratorImpl implements WordIterator {
+    private static final String TAG = "BigWords";
+    private int index;
+    private StringTokenizer tokenizer;
+    private Word word = new Word();
     static final String text = "Eastern Standard Tribe\n"
         + "\n"
         + "I once had a Tai Chi instructor who explained the difference between Chinese and Western medicine thus: \"Western medicine is based on corpses, things that you discover by cutting up dead bodies and pulling them apart. Chinese medicine is based on living flesh, things observed from vital, moving humans.\" \n"
@@ -100,9 +104,4 @@ public class ESTWordIteratorImpl implements WordIterator {
     public void remove() {
         throw new UnsupportedOperationException();
     }
-
-    private static final String TAG = "BigWords";
-    private int index;
-    private StringTokenizer tokenizer;
-    private Word word = new Word();
 }
