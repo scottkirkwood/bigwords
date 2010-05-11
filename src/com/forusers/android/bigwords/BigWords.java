@@ -92,7 +92,7 @@ public class BigWords extends Activity implements OnClickListener {
     public void onResume() {
         super.onResume();
         wordIter = new ESTWordIteratorImpl();
-        wordIter.open("");
+        wordIter.open(getApplicationContext(), R.raw.down_and_out_in_the_magic_kingdom);
         setWpmText(wordsPerMinute.getValue(), 0);
     }
 

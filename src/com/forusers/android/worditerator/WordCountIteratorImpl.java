@@ -1,12 +1,14 @@
 package com.forusers.android.worditerator;
 
+import android.content.Context;
+
 public class WordCountIteratorImpl implements WordIterator {
     public WordCountIteratorImpl() {
         index = 0;
     }
 
     @Override
-    public boolean open(String fname) {
+    public boolean open(Context fname, int id) {
         index = 0;
         return true;
     }
