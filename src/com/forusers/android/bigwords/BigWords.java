@@ -46,10 +46,7 @@ public class BigWords extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        SharedPreferences settings = getSharedPreferences(PREFS, 0);
-
-        wordsPerMinute = new ValueWithUpdateFrequency(settings.getInt("wpm", 200), 250);
-
+        loadPrefs();
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "DoNotDimScreen");
 
@@ -65,7 +62,15 @@ public class BigWords extends Activity implements OnClickListener {
     @Override
     public void onStop() {
         super.onStop();
+        savePrefs();
+    }
 
+    private void loadPrefs() {
+        SharedPreferences settings = getSharedPreferences(PREFS, 0);
+        wordsPerMinute = new ValueWithUpdateFrequency(settings.getInt("wpm", 200), 250);
+    }
+
+    private void savePrefs() {
         SharedPreferences settings = getSharedPreferences(PREFS, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("wpm", wordsPerMinute.getValue());
