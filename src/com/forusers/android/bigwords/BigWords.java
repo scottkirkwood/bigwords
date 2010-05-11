@@ -10,6 +10,7 @@ import com.forusers.android.worditerator.WordIterator;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -29,8 +30,9 @@ import com.forusers.android.ValueWithUpdateFrequency;
 public class BigWords extends Activity implements OnClickListener {
     private static final int MAX_MOVE_ANGLE = 30;
     private static final int MIN_MOVE_ANGLE = 3;
-    
+
     private static final String TAG = "BigWords";
+    private static final String PREFS = "BigWords";
     private TextView textView;
     private PowerManager.WakeLock wakeLock;
     private final Handler timerHandler = new Handler();
@@ -44,20 +46,32 @@ public class BigWords extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        wordsPerMinute = new ValueWithUpdateFrequency(200, 250);
-        
+        SharedPreferences settings = getSharedPreferences(PREFS, 0);
+
+        wordsPerMinute = new ValueWithUpdateFrequency(settings.getInt("wpm", 200), 250);
+
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "DoNotDimScreen");
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        
+
         textView = (TextView) findViewById(R.id.text);
         textView.setOnClickListener(this);
-        
+
         Button play = (Button) findViewById(R.id.play);
         play.setOnClickListener(this);
     }
-    
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        SharedPreferences settings = getSharedPreferences(PREFS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("wpm", wordsPerMinute.getValue());
+        editor.commit();
+    }
+
     @Override
     public void onClick(View v) {
         if (R.id.play == v.getId()) {
@@ -90,14 +104,14 @@ public class BigWords extends Activity implements OnClickListener {
             stopPlaying();
         }
     }
-    
+
     private void startPlaying() {
         if (!paused.compareAndSet(true, false)) {
             Log.i(TAG, "Attempted to start playing when already playing.");
             return;
         }
         startListening();
-        
+
         Button b = (Button) findViewById(R.id.play);
         b.setText(R.string.stop);
 
@@ -119,7 +133,7 @@ public class BigWords extends Activity implements OnClickListener {
         stopListening();
         wakeLock.release();
     }
-    
+
     private void startTimer() {
         timerHandler.removeCallbacks(nextWordTask);  // Just in case
         timerHandler.postDelayed(nextWordTask, wpmInDelayMillis());
@@ -140,28 +154,28 @@ public class BigWords extends Activity implements OnClickListener {
         ChangeIndicator ci = (ChangeIndicator) findViewById(R.id.tilt);
         ci.setPosition((int) diff * 20);
     }
-    
+
     private void startListening() {
         orientationSensor.reset();
-        
+
         SensorManager sm;
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-         
+
         sm.registerListener(orientationSensor, sm.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_NORMAL, new Handler());
     }
-    
+
     private void stopListening() {
         SensorManager sm;
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-        sm.unregisterListener(orientationSensor);            
+        sm.unregisterListener(orientationSensor);
     }
-    
+
     private final OrientationListener orientationSensor = new OrientationListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             super.onSensorChanged(event);
-            
+
             float diff = deltaAngle();
             if (Math.abs(diff) > MAX_MOVE_ANGLE) {
                 stopPlaying();
@@ -176,7 +190,7 @@ public class BigWords extends Activity implements OnClickListener {
             }
         }
     };
- 
+
     private final Runnable nextWordTask = new Runnable() {
         @Override
         public void run() {
