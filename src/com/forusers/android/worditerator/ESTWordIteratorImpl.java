@@ -34,6 +34,7 @@ public class ESTWordIteratorImpl implements WordIterator {
             } else {
                 text = new String(buf, 0, read);
             }
+            inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

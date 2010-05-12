@@ -28,6 +28,7 @@ import com.forusers.android.OrientationListener;
 import com.forusers.android.ValueWithUpdateFrequency;
 
 public class BigWords extends Activity implements OnClickListener {
+    private static final int DEFAULT_WPM = 300;
     private static final int MAX_MOVE_ANGLE = 30;
     private static final int MIN_MOVE_ANGLE = 3;
 
@@ -67,7 +68,7 @@ public class BigWords extends Activity implements OnClickListener {
 
     private void loadPrefs() {
         SharedPreferences settings = getSharedPreferences(PREFS, 0);
-        wordsPerMinute = new ValueWithUpdateFrequency(settings.getInt("wpm", 200), 250);
+        wordsPerMinute = new ValueWithUpdateFrequency(settings.getInt("wpm", DEFAULT_WPM), 250);
     }
 
     private void savePrefs() {
@@ -210,7 +211,7 @@ public class BigWords extends Activity implements OnClickListener {
                 textView.setText(word.getWord());
             }
 
-            timerHandler.postDelayed(this, wpmInDelayMillis());
+            timerHandler.postDelayed(this, wpmInDelayMillis() + word.extraMsDelay());
         }
     };
 }
