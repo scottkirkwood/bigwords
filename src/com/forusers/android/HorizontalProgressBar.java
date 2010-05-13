@@ -11,6 +11,7 @@ import android.graphics.Region;
 
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.forusers.android.bigwords.R;
@@ -21,6 +22,27 @@ import com.forusers.android.bigwords.R;
  * @author scottkirkwood
  */
 public class HorizontalProgressBar extends View {
+    private static int DEFAULT_BK_COLOR = 0xFF668800;
+    private static int DEFAULT_FG_COLOR = 0xFF9977FF;
+    private static int DEFAULT_TEXT_COLOR = 0xFFFFFFFF;
+    private static int DEFAULT_TEXT_COLOR2 = 0xFF000000;
+    private static int DEFAULT_TEXT_SIZE = 10;
+    private static int DEFAULT_MIN = 0;
+    private static int DEFAULT_MAX = 100;
+    private static String TAG = "HorizontalProgressBar";
+    private int backgroundColor;
+    private int foregroundColor;
+    private int textColor;
+    private int secondTextColor;
+    private Paint paint;
+    private int max;
+    private int min;
+    private int pos;
+    private float textY;
+    private float textX;
+    private String formatText;
+    private boolean handleClicks;
+
     public HorizontalProgressBar(Context context) {
         super(context);
         initProgressBar();
@@ -53,6 +75,22 @@ public class HorizontalProgressBar extends View {
                     DEFAULT_TEXT_SIZE));
 
         a.recycle();
+    }
+
+    /* (non-Javadoc)
+     * @see android.view.View#onTouchEvent(android.view.MotionEvent)
+     */
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (!handleClicks) {
+            return false;
+        }
+        float percent = event.getX() / getWidth();
+        Log.i(TAG, "One touch event: " + percent * 100.0 + "%");
+        int newValue = (int) (min + (max - min) * percent);
+        Log.i(TAG, "Touch event setting value to: " + newValue);
+        setPosition(newValue);
+        return true;
     }
 
     private void setFormatText(String newFormatText) {
@@ -94,6 +132,7 @@ public class HorizontalProgressBar extends View {
         textX = 0;
         textY = 0;
         formatText = "%d%% done";
+        handleClicks = true;
     }
 
     /**
@@ -235,25 +274,4 @@ public class HorizontalProgressBar extends View {
                         bottom, Region.Op.REPLACE);
         canvas.drawText(text, textX, textY, paint);
     }
-
-    private static int DEFAULT_BK_COLOR = 0xFF668800;
-    private static int DEFAULT_FG_COLOR = 0xFF9977FF;
-    private static int DEFAULT_TEXT_COLOR = 0xFFFFFFFF;
-    private static int DEFAULT_TEXT_COLOR2 = 0xFF000000;
-    private static int DEFAULT_TEXT_SIZE = 10;
-    private static int DEFAULT_MIN = 0;
-    private static int DEFAULT_MAX = 100;
-    private static String TAG = "HorizontalProgressBar";
-    private int backgroundColor;
-    private int foregroundColor;
-    private int textColor;
-    private int secondTextColor;
-    private Paint paint;
-    private int max;
-    private int min;
-    private int pos;
-    private float textY;
-    private float textX;
-    private String formatText;
-
 }

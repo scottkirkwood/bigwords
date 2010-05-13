@@ -11,7 +11,7 @@ import android.hardware.SensorEventListener;
 public class OrientationListener implements SensorEventListener {
     private static int SETTLE_COUNT = 10;  // How long for the filter to settle.
     private Filter rollFilter = new LowPassFilter(50, 25);
-    private Filter startAngle = new MovingAverage(100); 
+    private Filter startAngle = new MovingAverage(50); 
     
     public OrientationListener() {
         reset();
