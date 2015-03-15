@@ -1,0 +1,1 @@
+Rapid Serial Visualization of Presentation (RSVP) is a way of reading text where your eyes do not need to scan the text instead it is shown one word at a time.
